@@ -5,10 +5,14 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Function: TODO
@@ -20,19 +24,34 @@ import org.junit.Test;
  */
 public class LoginLogoutTest {
 
+    private Subject subject;
+
     @Test
-    public void loginLogoutTest(){
-        Factory<org.apache.shiro.mgt.SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro.ini");
+    public void loginLogoutTest() {
+        login("shiro-authenticator-only-one-success.ini");
+        //得到一个身份集合，其包含了Realm验证成功的身份信息
+        PrincipalCollection principalCollection = subject.getPrincipals();
+        List<String> list = principalCollection.asList();
+        System.err.println(list.toString());
+        Assert.assertEquals(2, list.size());
+    }
+
+
+    public void login(String configFile) {
+        Factory<org.apache.shiro.mgt.SecurityManager> factory = new IniSecurityManagerFactory("classpath:" + configFile);
         SecurityManager securityManager = factory.getInstance();
         SecurityUtils.setSecurityManager(securityManager);
-        Subject subject = SecurityUtils.getSubject();
+        subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken("zhang", "123");
         try {
             subject.login(token);
         } catch (AuthenticationException e) {
             e.printStackTrace();
         }
-        Assert.assertEquals(true, subject.isAuthenticated());
+    }
+
+    @After
+    public void logout() {
         subject.logout();
     }
 
