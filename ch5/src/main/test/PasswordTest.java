@@ -24,7 +24,14 @@ public class PasswordTest {
     private Subject subject;
 
     @Test
-    public void testJdbcHashCredentialsMatcher(){
+    public void testRetryLimitedHashedCredentialsMatcher() {
+        for (int i = 0; i < 5; i++) {
+            login("shiro-retryLimitHashedCredentialsMatcher.ini", "yang", "1233");
+        }
+    }
+
+    @Test
+    public void testJdbcHashCredentialsMatcher() {
         //cxy shiro 默认使用org.apache.commons.beanutils.BeanUtils不支持Enum转换，需要自行处理
         BeanUtilsBean.getInstance().getConvertUtils().register(new EnumConverter(), JdbcRealm.SaltStyle.class);
         login("shiro-jdbc-hashedCredentialsMatcher.ini", "liu", "123");
@@ -49,10 +56,10 @@ public class PasswordTest {
     /**
      * TODO 自行注册的Enum转换器
      */
-    private class EnumConverter extends AbstractConverter{
+    private class EnumConverter extends AbstractConverter {
 
         protected Object convertToType(Class aClass, Object o) throws Throwable {
-            return Enum.valueOf(aClass,o.toString());
+            return Enum.valueOf(aClass, o.toString());
         }
 
         protected Class getDefaultType() {
