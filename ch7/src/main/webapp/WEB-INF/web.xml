@@ -23,10 +23,10 @@
         修改默认配置文件位置，默认为【先后顺序】：/WEB-INF/shiro.ini 和 classpath:shiro.ini 数组
         cxy 属性名：defaultConfigLocations？？？
     -->
-    <!--<context-param>
+    <context-param>
         <param-name>shiroConfigLocations</param-name>
-        <param-value>classpath:shiro.ini</param-value>
-    </context-param>-->
+        <param-value>classpath:shiro-formfilterlogin.ini</param-value>
+    </context-param>
 
 
     <!--web【非Spring】 集成-->
