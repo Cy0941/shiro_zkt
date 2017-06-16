@@ -46,6 +46,9 @@ public class PasswordTest {
         login("shiro-jdbc-passwordservice.ini", "wu", "123");
     }
 
+    /**
+     * TODO 自行注册的Enum转换器
+     */
     private class EnumConverter extends AbstractConverter{
 
         protected Object convertToType(Class aClass, Object o) throws Throwable {
