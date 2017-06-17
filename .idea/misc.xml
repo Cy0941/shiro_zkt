@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
-    <file type="web" url="file://$PROJECT_DIR$" />
-  </component>
-  <component name="JsFlowSettings">
-    <service-enabled>false</service-enabled>
-    <exe-path />
-    <annotation-enable>false</annotation-enable>
-    <other-services-enabled>false</other-services-enabled>
+    <file type="web" url="file://$PROJECT_DIR$/ch2" />
+    <file type="web" url="file://$PROJECT_DIR$/ch3" />
+    <file type="web" url="file://$PROJECT_DIR$/ch4" />
+    <file type="web" url="file://$PROJECT_DIR$/ch5" />
+    <file type="web" url="file://$PROJECT_DIR$/ch6" />
+    <file type="web" url="file://$PROJECT_DIR$/ch7" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
-    </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/ch1/pom.xml" />
-      </set>
     </option>
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -42,9 +36,6 @@
           </State>
           <State>
             <id>DOM issuesJavaScript</id>
-          </State>
-          <State>
-            <id>Internationalization issues</id>
           </State>
           <State>
             <id>Internationalization issuesJava</id>
@@ -82,9 +73,6 @@
           <State>
             <id>Visibility issuesJava</id>
           </State>
-          <State>
-            <id>WebSocket issues</id>
-          </State>
         </expanded-state>
         <selected-state>
           <State>
@@ -94,7 +82,7 @@
       </profile-state>
     </entry>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="SshConsoleOptionsProvider">
