@@ -25,7 +25,7 @@
     -->
     <context-param>
         <param-name>shiroConfigLocations</param-name>
-        <param-value>classpath:shiro-formfilterlogin.ini</param-value>
+        <param-value>classpath:shiro.ini</param-value>
     </context-param>
 
 
