@@ -5,9 +5,9 @@
 <br/>
 <br/>
 <br/>
-<center>
+<div style="text-align: center;">
     <a href="/login">简单登录</a><br/>
     <a href="/formFilterLogin">表单登录</a><br/>
-</center>
+</div>
 </body>
 </html>
