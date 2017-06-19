@@ -29,6 +29,7 @@ public class AnyRolesFilter extends AccessControlFilter {
             return true;
         }
         for (String role : roles) {
+            //cxy 角色判断
             if (getSubject(request, response).hasRole(role)) {
                 return true;
             }

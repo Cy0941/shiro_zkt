@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         id="WebApp_ID" version="3.1">
+
+    <!--
+        从 1.2 版本开始引入 Environment/WebEnvironment 概念；
+        由它们的实现提供相应的 SecurityManager 及其相应依赖
+        ShiroFilter 会自动找到 Environment 然后获取相应依赖
+
+        通过 EnvironmentLoaderListener 来创建 WebEnvironment，并自动绑定到ServletContext，默认使用 IniWebEnvironment 实现
+    -->
+    <listener>
+        <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+    </listener>
+
+    <!--修改默认实现-->
+    <!--<context-param>
+        <param-name>shiroEnvironmentClass</param-name>
+        <param-value>org.apache.shiro.web.env.IniWebEnvironment</param-value>
+    </context-param>-->
+    <!--
+        修改默认配置文件位置，默认为【先后顺序】：/WEB-INF/shiro.ini 和 classpath:shiro.ini 数组
+        cxy shiroConfigLocations org.apache.shiro.web.env.EnvironmentLoader line:293
+    -->
+    <context-param>
+        <param-name>shiroConfigLocations</param-name>
+        <param-value>classpath:shiro.ini</param-value>
+    </context-param>
+
+
+    <!--web【非Spring】 集成-->
+    <filter>
+        <filter-name>shiroFilter</filter-name>
+        <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>shiroFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+
+    <display-name>Archetype Created Web Application</display-name>
+</web-app>
