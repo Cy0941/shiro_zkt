@@ -1,8 +1,9 @@
-package cn.cxy.shiro.session.scheduler;
+package org.apache.shiro.session.scheduler;
 
 import cn.cxy.shiro.utils.JdbcTemplateUtils;
 import cn.cxy.shiro.utils.SerializableUtils;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.*;
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class MySessionValidationScheduler implements SessionValidationScheduler, Runnable {
 
     private JdbcTemplate jdbcTemplate = JdbcTemplateUtils.getInstance();
@@ -40,10 +42,6 @@ public class MySessionValidationScheduler implements SessionValidationScheduler,
     private ScheduledExecutorService service;
     private long interval = DefaultSessionManager.DEFAULT_SESSION_VALIDATION_INTERVAL;
     private boolean enabled = false;
-
-    public MySessionValidationScheduler() {
-        super();
-    }
 
     public void run() {
         String sql = "select session from sessions limit ?,?";
@@ -62,9 +60,9 @@ public class MySessionValidationScheduler implements SessionValidationScheduler,
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            start += size;
+            sessionList = jdbcTemplate.queryForList(sql, String.class, start, size);
         }
-        start += size;
-        sessionList = jdbcTemplate.queryForList(sql, String.class, start, size);
     }
 
     public boolean isEnabled() {

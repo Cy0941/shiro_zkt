@@ -5,6 +5,7 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
 
+  <!--cxy 获取session时验证已过期，会抛出InvalidSessionException异常-->
   <error-page>
     <exception-type>org.apache.shiro.session.InvalidSessionException</exception-type>
     <location>/invalidSession.jsp</location>
