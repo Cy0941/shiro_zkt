@@ -25,6 +25,7 @@
         <module>ch8</module>
         <module>ch9</module>
         <module>ch10</module>
+        <module>ch11</module>
     </modules>
 
     <build>
