@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--缓存管理器 - 使用EhCache实现-->
+    <bean class="org.apache.shiro.cache.ehcache.EhCacheManager" id="ehCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
+    </bean>
+
+    <!-- 凭证匹配器-realm -->
+    <bean class="cn.cxy.shiro.credentials.RetryLimitHashedCredentialsMatcher" id="credentialsMatcher">
+        <constructor-arg ref="ehCacheManager"/>
+        <property name="hashAlgorithmName" value="md5"/>
+        <property name="hashIterations" value="2"/>
+        <property name="storedCredentialsHexEncoded" value="true"/>
+    </bean>
+
+    <!--realm实现-->
+    <bean class="cn.cxy.shiro.realm.UserRealm" id="userRealm">
+        <property name="userService" ref="userService"/>
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+        <property name="cachingEnabled" value="true"/>
+        <property name="authenticationCachingEnabled" value="true"/>
+        <property name="authenticationCacheName" value="authenticationCache"/>
+        <property name="authorizationCachingEnabled" value="true"/>
+        <property name="authorizationCacheName" value="authorizationCache"/>
+    </bean>
+
+    <!--会话ID生成器-->
+    <bean class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" id="javaUuidSessionIdGenerator"/>
+
+    <!--会话DAO-->
+    <bean class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO" id="cacheSessionDAO">
+        <property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
+        <property name="sessionIdGenerator" ref="javaUuidSessionIdGenerator"/>
+    </bean>
+
+    <!--会话验证调度器-->
+    <bean class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler"
+          id="quartzSessionValidationScheduler">
+        <property name="sessionValidationInterval" value="1800000"/><!--单位：毫秒-->
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+    <!--会话管理器-->
+    <bean id="sessionManager" class="org.apache.shiro.session.mgt.DefaultSessionManager">
+        <!--session过期时间（单位：毫秒）-->
+        <property name="globalSessionTimeout" value="1800000"/>
+        <!--是否过期删除-->
+        <property name="deleteInvalidSessions" value="true"/>
+        <!--激活定期session校验-->
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <!--session校验处理器-->
+        <property name="sessionValidationScheduler" ref="quartzSessionValidationScheduler"/>
+        <property name="sessionDAO" ref="cacheSessionDAO"/>
+    </bean>
+
+    <!--认证策略-->
+    <bean class="org.apache.shiro.authc.pam.ModularRealmAuthenticator" id="authenticator">
+        <property name="authenticationStrategy">
+            <bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"/>
+        </property>
+    </bean>
+
+    <!--权限角色解析器-->
+    <bean class="org.apache.shiro.authz.ModularRealmAuthorizer" id="authorizer">
+        <property name="permissionResolver">
+            <bean class="org.apache.shiro.authz.permission.WildcardPermissionResolver"/>
+        </property>
+    </bean>
+
+    <!--安全管理器-->
+    <bean class="org.apache.shiro.mgt.DefaultSecurityManager" id="securityManager">
+        <property name="authorizer" ref="authorizer"/>
+        <property name="authenticator" ref="authenticator"/>
+        <property name="realms">
+            <list>
+                <ref bean="userRealm"/>
+            </list>
+        </property>
+        <property name="sessionManager" ref="sessionManager"/>
+        <property name="cacheManager" ref="ehCacheManager"/>
+    </bean>
+
+    <!--相当于与调用 SecurityUtils.setSecurityManager(securityManager) cxy 绑定？？-->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
+        <property name="arguments" ref="securityManager"/>
+    </bean>
+
+
+    <!--cxy 生命周期处理【配置shiro注解(DefaultAdvisorAutoProxyCreator)支持必须】-->
+    <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor" id="lifecycleBeanPostProcessor"/>
+
+    <!--shiro 注解配置，仅在 lifecycleBeanProcessor 配置后生效-->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+
+    <import resource="spring-beans.xml"/>
+
+</beans>
