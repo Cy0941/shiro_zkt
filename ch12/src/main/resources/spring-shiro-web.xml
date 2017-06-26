@@ -70,8 +70,8 @@
         </property>
     </bean>
 
-    <!--安全管理器-->
-    <bean class="org.apache.shiro.mgt.DefaultSecurityManager" id="securityManager">
+    <!--cxy web环境安全管理器-->
+    <bean class="org.apache.shiro.web.mgt.DefaultWebSecurityManager" id="securityManager">
         <property name="authorizer" ref="authorizer"/>
         <property name="authenticator" ref="authenticator"/>
         <property name="realms">
@@ -125,7 +125,7 @@
         <property name="cookie" ref="rememberMeCookie"/>
     </bean>
 
-    <!--shiro web 过滤器 cxy - id 属性必须与 web.xml 中filter-name 相同 -->
+    <!--shcontroller web 过滤器 cxy - id 属性controller web.xml 中filter-name 相同 -->
     <bean class="org.apache.shiro.spring.web.ShiroFilterFactoryBean" id="shiroFilter">
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/WEB-INF//jsp/login.jsp"/>

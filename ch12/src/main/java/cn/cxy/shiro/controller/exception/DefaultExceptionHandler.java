@@ -1,4 +1,4 @@
-package cn.cxy.shiro.web.exception;
+package cn.cxy.shiro.controller.exception;
 
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package cn.cxy.shiro.web.mvc;
+package cn.cxy.shiro.controller;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;

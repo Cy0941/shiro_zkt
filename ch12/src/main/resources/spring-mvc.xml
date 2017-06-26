@@ -38,6 +38,6 @@
     <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" id="exceptionHandlerExceptionResolver"></bean>
 
     <!--cxy 未授权异常处理-->
-    <bean class="cn.cxy.shiro.web.exception.DefaultExceptionHandler"/>
+    <bean class="cn.cxy.shiro.controller.exception.DefaultExceptionHandler"/>
 
 </beans>
