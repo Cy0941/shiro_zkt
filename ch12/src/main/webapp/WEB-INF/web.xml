@@ -12,8 +12,9 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath:spring-beans.xml,
-            classpath:spring-shiro-web.xml
-            <!--classpath:spring-shiro.xml-->
+            classpath:spring-shiro-web.xml,
+            <!--TODO remove-->
+            classpath:spring-shiro.xml
         </param-value>
     </context-param>
     <listener>
