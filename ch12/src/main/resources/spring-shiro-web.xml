@@ -134,13 +134,15 @@
         <property name="filters">
             <map>
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
+                <!--ssl配置-->
+                <entry key="ssl" value-ref="sslFilter"/>
             </map>
         </property>
         <property name="filterChainDefinitions">
             <value>
                 /jsp/index.jsp = anon
                 /jsp/unauthorized.jsp = anon
-                /jsp/login.jsp = anon
+                /jsp/login.jsp = anon,ssl<!--登录需要走 SSL 过滤器-->
                 /jsp/success.jsp = authc
                 /logout = logout
                 /** = user
@@ -148,7 +150,11 @@
         </property>
     </bean>
 
-
+    <!--SSL/TLS 配置-->
+    <bean class="org.apache.shiro.web.filter.authz.SslFilter" id="sslFilter">
+        <!--cxy ssl 默认端口为443 -->
+        <property name="port" value="8443"/>
+    </bean>
 
 
     <!--cxy 生命周期处理【配置shiro注解(DefaultAdvisorAutoProxyCreator)支持必须】-->
