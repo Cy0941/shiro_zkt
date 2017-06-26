@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="cn.cxy.shiro" use-default-filters="false">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!--数据库连接池-->
+    <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/shiro"/>
+        <property name="username" value="root"/>
+        <property name="password" value="admin"/>
+    </bean>
+
+    <!--baseDAO-->
+    <bean id="baseDao" abstract="true">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean class="cn.cxy.shiro.dao.PermissionDaoImpl" parent="baseDao" id="permissionDao"/>
+    <bean class="cn.cxy.shiro.dao.RoleDaoImpl" parent="baseDao" id="roleDao"/>
+    <bean class="cn.cxy.shiro.dao.UserDaoImpl" parent="baseDao" id="userDao"/>
+
+    <!--Service-->
+    <bean id="permissionService" class="cn.cxy.shiro.service.PermissionServiceImpl">
+        <property name="permissionDao" ref="permissionDao"/>
+    </bean>
+    <bean class="cn.cxy.shiro.service.RoleServiceImpl" id="roleService">
+        <property name="roleDao" ref="roleDao"/>
+    </bean>
+    <bean class="cn.cxy.shiro.service.UserServiceImpl" id="userService">
+        <property name="userDao" ref="userDao"/>
+        <property name="passwordHelper" ref="passwordHelper"/>
+    </bean>
+    
+    <!--cxy 使用 setter 方法进行构造-->
+    <bean class="cn.cxy.shiro.utils.PasswordHelper" id="passwordHelper">
+        <property name="algorithmName" value="md5"/>
+        <property name="hashIterations" value="2"/>
+        <property name="randomNumberGenerator">
+            <bean class="org.apache.shiro.crypto.SecureRandomNumberGenerator"/>
+        </property>
+    </bean>
+
+</beans>
