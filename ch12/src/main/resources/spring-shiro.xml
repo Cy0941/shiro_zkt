@@ -83,7 +83,7 @@
         <property name="cacheManager" ref="ehCacheManager"/>
     </bean>
 
-    <!--相当于与调用 SecurityUtils.setSecurityManager(securityManager) cxy 绑定？？-->
+    <!--相当于与调用 SecurityUtils.setSecurityManager(securityManager) cxy 绑定-->
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
         <property name="arguments" ref="securityManager"/>
