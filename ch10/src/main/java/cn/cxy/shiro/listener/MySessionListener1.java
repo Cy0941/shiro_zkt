@@ -14,14 +14,14 @@ import org.apache.shiro.session.SessionListener;
 public class MySessionListener1 implements SessionListener {
 
     public void onStart(Session session) {
-        System.out.println("Session创建："+session.getId());
+        System.out.println("MySessionListener1---------Session创建："+session.getId());
     }
 
     public void onStop(Session session) {
-        System.out.println("Session过期："+session.getId());
+        System.out.println("MySessionListener1---------Session过期："+session.getId());
     }
 
     public void onExpiration(Session session) {
-        System.out.println("Session停止："+session.getId());
+        System.out.println("MySessionListener1---------Session停止："+session.getId());
     }
 }

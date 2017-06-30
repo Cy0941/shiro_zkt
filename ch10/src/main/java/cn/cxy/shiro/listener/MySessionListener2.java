@@ -14,6 +14,6 @@ import org.apache.shiro.session.SessionListenerAdapter;
 public class MySessionListener2 extends SessionListenerAdapter {
     @Override
     public void onStart(Session session) {
-        System.out.println("Session创建："+session.getId());
+        System.out.println("MySessionListener2---------Session创建："+session.getId());
     }
 }

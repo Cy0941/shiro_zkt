@@ -28,12 +28,14 @@ public class MySessionDAO extends CachingSessionDAO {
         }
         JdbcTemplate jdbcTemplate = JdbcTemplateUtils.getInstance();
         String sql = "update sessions set session = ? where id = ?";
+        System.err.println("update session-----session.getId(): " + session.getId() + " ,SerializableSession: " + SerializableUtils.serialize(session));
         jdbcTemplate.update(sql, SerializableUtils.serialize(session), session.getId());
     }
 
     protected void doDelete(Session session) {
         JdbcTemplate jdbcTemplate = JdbcTemplateUtils.getInstance();
         String sql = "delete from sessions where id = ?";
+        System.err.println("doDelete session-----session.getId(): " + session.getId() + " ,SerializableSession: " + SerializableUtils.serialize(session));
         jdbcTemplate.update(sql, session.getId());
     }
 
@@ -42,6 +44,7 @@ public class MySessionDAO extends CachingSessionDAO {
         Serializable sessionId = generateSessionId(session);
         //cxy 设置目标sessionID
         assignSessionId(session, sessionId);
+        System.err.println("doCreate session-----session.getId(): " + session.getId() + " ,SerializableSession: " + SerializableUtils.serialize(session));
         String sql = "insert into sessions(id,session) values(?,?)";
         jdbcTemplate.update(sql, sessionId, SerializableUtils.serialize(session));
         return session.getId();
@@ -54,6 +57,7 @@ public class MySessionDAO extends CachingSessionDAO {
         if (CollectionUtils.isEmpty(sessionStrList)) {
             return null;
         }
+        System.err.println("doReadSession session-----session.getId(): " + sessionId);
         return SerializableUtils.deserialize(sessionStrList.get(0));
     }
 }

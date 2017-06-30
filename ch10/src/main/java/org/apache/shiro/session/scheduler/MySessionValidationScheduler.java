@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Function: TODO
+ * Function: 验证调度器实现 - 重写覆盖调用 sessionDAO.getActiveSession() 方法【此方法默认获取全部】  -- 修改为分页获取session验证
  * Reason: TODO ADD REASON(可选).</br>
  * Date: 2017/6/19 18:28 </br>
  *
