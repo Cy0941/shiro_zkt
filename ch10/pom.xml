@@ -114,10 +114,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <configuration>
-                    <stopKey>shutdown</stopKey>
-                    <stopPort>9966</stopPort>
-                </configuration>
+                <version>9.4.6.v20170531</version>
             </plugin>
         </plugins>
     </build>

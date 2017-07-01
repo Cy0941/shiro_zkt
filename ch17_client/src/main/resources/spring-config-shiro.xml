@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--缓存管理器-->
+    <bean class="org.apache.shiro.cache.ehcache.EhCacheManager" id="cacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
+    </bean>
+
+    <!--realm实现-->
+    <bean class="cn.cxy.shiro.ch17.oauth2.OAuth2Realm" id="oAuthRealm">
+        <property name="cachingEnabled" value="true"/>
+        <property name="authenticationCachingEnabled" value="true"/>
+        <property name="authenticationCacheName" value="authenticationCache"/>
+        <property name="authorizationCachingEnabled" value="true"/>
+        <property name="authorizationCacheName" value="authorizationCache"/>
+
+        <!--cxy OAuth2相关配置-->
+        <property name="clientId" value="c1ebe466-1cdc-4bd3-ab69-77c3561b9dee"/>
+        <property name="clientSecret" value="d8346ea2-6017-43ed-ad68-19c0f971738b"/>
+        <property name="accessTokenUrl" value="http://localhost:8080/accessToken"/>
+        <property name="userInfoUrl" value="http://localhost:8080/userInfo"/>
+        <property name="redirectUrl" value="http://localhost:9080/ch17_client/oauth2-login"/>
+    </bean>
+
+    <!--会话ID生成器-->
+    <bean class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" id="sessionIdGenerator"/>
+
+    <!--会话ID模板-->
+    <bean class="org.apache.shiro.web.servlet.SimpleCookie" id="sessionIdCookie">
+        <constructor-arg value="sid"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="-1"/>
+    </bean>
+
+    <!--记住我模板-->
+    <bean class="org.apache.shiro.web.servlet.SimpleCookie" id="rememberMeCookie">
+        <constructor-arg value="rememberMe"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="2592000"/><!-- 30天 -->
+    </bean>
+
+    <!--rememberMe管理器-->
+    <bean class="org.apache.shiro.web.mgt.CookieRememberMeManager" id="rememberMeManager">
+        <!--rememberMe cookie 加密的密钥，建议每个项目都不一样，默认 AES 算法，密钥长度（128 256 512 位）-->
+        <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+
+    <!--会话DAO-->
+    <bean class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO" id="sessionDAO">
+        <property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
+        <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
+    </bean>
+
+    <!--会话管理器-->
+    <bean class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager" id="sessionManager">
+        <property name="globalSessionTimeout" value="1800000"/>
+        <property name="deleteInvalidSessions" value="true"/>
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
+        <property name="sessionDAO" ref="sessionDAO"/>
+        <property name="sessionIdCookieEnabled" value="true"/>
+        <property name="sessionIdCookie" ref="sessionIdCookie"/>
+    </bean>
+
+    <!--会话验证调度器-->
+    <bean class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler" id="sessionValidationScheduler">
+        <property name="sessionValidationInterval" value="1800000"/><!--单位：毫秒-->
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+    <!--安全管理器-->
+    <bean class="org.apache.shiro.web.mgt.DefaultWebSecurityManager" id="securityManager">
+        <!--fixme-->
+        <!--<property name="sessionManager" ref="sessionManager"/>-->
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="rememberMeManager" ref="rememberMeManager"/>
+        <property name="realm" ref="oAuthRealm"/>
+    </bean>
+
+    <!--cxy 可以不要吧 SecurityUtils.setSecurityManager(securityManger)-->
+    <!--<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod">
+            <bean class="org.apache.shiro.SecurityUtils.setSecurityManager"/>
+        </property>
+        <property name="arguments" ref="securityManager"/>
+    </bean>-->
+
+    <!--cxy OAuth2 身份验证过滤器-->
+    <bean class="cn.cxy.shiro.ch17.oauth2.OAuth2AuthenticationFilter" id="oAuth2AuthenticationFilter">
+        <property name="authCodeParam" value="code"/>
+        <property name="failureUrl" value="/oauth2Failure.jsp"/>
+    </bean>
+
+    <!--shiro web 过滤器-->
+    <bean class="org.apache.shiro.spring.web.ShiroFilterFactoryBean" id="shiroFilter">
+        <property name="securityManager" ref="securityManager"/>
+        <!--cxy 服务器登录地址-->
+        <property name="loginUrl"
+                  value="http://localhost:8080/authorize?client_id=c1ebe466-1cdc-4bd3-ab69-77c3561b9dee&amp;response_type=code&amp;redirect_uri=http://localhost:9080/ch17_client/oauth2-login"/>
+        <property name="successUrl" value="/"/>
+        <property name="filters">
+            <util:map>
+                <entry key="oauth2Authc" value-ref="oAuth2AuthenticationFilter"/>
+            </util:map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                / = anon
+                /oauth2Failure.jsp = anon
+                /oauth2-login = oauth2Authc
+                /logout = logout
+                /** = user
+            </value>
+        </property>
+    </bean>
+
+    <!--shiro生命周期处理器-->
+    <bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor" id="lifecycleBeanPostProcessor"/>
+
+</beans>
