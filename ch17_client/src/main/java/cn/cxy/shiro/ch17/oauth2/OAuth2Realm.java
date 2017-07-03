@@ -37,6 +37,7 @@ public class OAuth2Realm extends AuthorizingRealm {
 
     @Override
     public boolean supports(AuthenticationToken token) {
+        System.err.println("client----------cn.cxy.shiro.ch17.oauth2.OAuth2Realm-------supports");
         return token instanceof OAuth2Token;
     }
 
@@ -45,6 +46,7 @@ public class OAuth2Realm extends AuthorizingRealm {
     }
 
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        System.err.println("client-------------cn.cxy.shiro.ch17.oauth2.OAuth2Realm------doGetAuthenticationInfo");
         OAuth2Token oAuth2Token = (OAuth2Token) token;
         String code = oAuth2Token.getAuthCode();
         String username = extractUsername(code);

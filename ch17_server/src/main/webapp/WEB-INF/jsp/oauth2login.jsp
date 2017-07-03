@@ -10,7 +10,9 @@
 <html>
 <head>
     <title>登录并授权</title>
-    <style>.error{color:red;}</style>
+    <style>
+        .error{color:red;}
+    </style>
 </head>
 <body>
 

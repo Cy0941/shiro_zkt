@@ -102,7 +102,7 @@
         <!--cxy 服务器登录地址-->
         <property name="loginUrl"
                   value="http://localhost:8080/authorize?client_id=c1ebe466-1cdc-4bd3-ab69-77c3561b9dee&amp;response_type=code&amp;redirect_uri=http://localhost:9080/ch17_client/oauth2-login"/>
-        <property name="successUrl" value="/"/>
+        <property name="successUrl" value="/index.jsp"/>
         <property name="filters">
             <util:map>
                 <entry key="oauth2Authc" value-ref="oAuth2AuthenticationFilter"/>

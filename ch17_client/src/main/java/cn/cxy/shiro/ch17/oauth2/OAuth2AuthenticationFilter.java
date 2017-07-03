@@ -39,12 +39,14 @@ public class OAuth2AuthenticationFilter extends AuthenticatingFilter {
     private String failureUrl;
 
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {
+        System.out.println("client-------cn.cxy.shiro.ch17.oauth2.OAuth2AuthenticationFilter---------createToken");
         HttpServletRequest servletRequest = (HttpServletRequest) request;
         String code = servletRequest.getParameter(authCodeParam);
         return new OAuth2Token(code);
     }
 
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
+        System.out.println("client------cn.cxy.shiro.ch17.oauth2.OAuth2AuthenticationFilter----onAccessDenied");
         String error = request.getParameter("error");
         String errorDescription = request.getParameter("error_description");
         if (!StringUtils.isEmpty(error)) {
@@ -64,6 +66,8 @@ public class OAuth2AuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        System.out.println("client-----cn.cxy.shiro.ch17.oauth2.OAuth2AuthenticationFilter------isAccessAllowed");
+        //cxy 该方法返回false强制执行onAccessDenied
         return false;
     }
 
@@ -75,6 +79,7 @@ public class OAuth2AuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
+        System.out.println("client----------cn.cxy.shiro.ch17.oauth2.OAuth2AuthenticationFilter-----------onLoginFailure");
         Subject subject = getSubject(request, response);
         if (subject.isAuthenticated() || subject.isRemembered()) {
             try {
